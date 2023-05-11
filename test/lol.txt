@@ -1,0 +1,224 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_clone/resources/auth_methods.dart';
+import 'package:instagram_clone/responsive/mobile_screen_layout.dart';
+import 'package:instagram_clone/responsive/responsive_layout_screen.dart';
+import 'package:instagram_clone/responsive/web_screen_layout.dart';
+import 'package:instagram_clone/screens/loginScreen.dart';
+import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/utils.dart';
+import 'package:instagram_clone/widgets/text_field_input.dart';
+
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  Uint8List? _avatar;
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
+
+  void selectImage() async {
+    Uint8List im = await pickImage(ImageSource.gallery);
+
+    setState(() {
+      _avatar = im;
+    });
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signupUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      username: _usernameController.text,
+      bio: _bioController.text,
+      file: _avatar!,
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+    if (res != "success") {
+      showSnackBar(res, context);
+    } else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout()),
+      ));
+    }
+  }
+
+  void navigatorToLogin() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const LoginScreen(),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          width: double.infinity,
+          child: Center(
+            child: Column(
+              children: [
+                Flexible(
+                  child: Container(),
+                  flex: 1,
+                ),
+                // svg image
+                SvgPicture.asset(
+                  'assets/ic_instagram.svg',
+                  color: primaryColor,
+                  height: 54,
+                ),
+
+                const SizedBox(
+                  height: 30,
+                ),
+
+                //  circular widget to accept file from mobile gallery
+                Stack(
+                  children: [
+                    _avatar != null
+                        ? CircleAvatar(
+                            radius: 64,
+                            backgroundImage: MemoryImage(_avatar!),
+                          )
+                        : const CircleAvatar(
+                            radius: 64,
+                            backgroundImage: NetworkImage(
+                                "https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"),
+                          ),
+                    Positioned(
+                        bottom: -10,
+                        right: 0,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.add_a_photo,
+                          ),
+                          onPressed: selectImage,
+                        ))
+                  ],
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                //  Text Feild input for username
+                TextFeildInput(
+                  textEditingController: _usernameController,
+                  hintText: "Enter your username",
+                  textInputType: TextInputType.text,
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                // TextFiled input for email
+                TextFeildInput(
+                  textEditingController: _emailController,
+                  hintText: "Enter your email",
+                  textInputType: TextInputType.emailAddress,
+                ),
+
+                const SizedBox(
+                  height: 24,
+                ),
+                // TextFeild input for password
+                TextFeildInput(
+                  textEditingController: _passwordController,
+                  hintText: "Enter your password",
+                  textInputType: TextInputType.text,
+                  isPass: true,
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                // Textfield input for bio
+                TextFeildInput(
+                  textEditingController: _bioController,
+                  hintText: "Enter your bio",
+                  textInputType: TextInputType.text,
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+
+                // Signup Button
+                InkWell(
+                  onTap: signUpUser,
+                  child: Container(
+                    child: _isLoading
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: primaryColor,
+                            ),
+                          )
+                        : const Text("Sign up"),
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: const ShapeDecoration(
+                        color: blueColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(4)))),
+                  ),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Flexible(
+                  child: Container(),
+                  flex: 2,
+                ),
+                // Transitions for signUp
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: navigatorToLogin,
+                      child: Container(
+                        child: const Text("Do have an account?"),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        "Sign in",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
