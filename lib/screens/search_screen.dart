@@ -80,6 +80,7 @@ class _SearchScreenState extends State<SearchScreen> {
           title: CupertinoSearchTextField(
             controller: _searchController,
             placeholder: 'Search username...',
+            style: TextStyle(color: primaryColor, fontSize: 15),
           ),
         ),
         body: _searchController.text.isNotEmpty
@@ -91,7 +92,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         onTap: () =>
                             Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
-                              ProfileScreen(uid: _searchResult[index]['uid']),
+                              // uid: _searchResult[index]['uid']
+                              ProfileScreen(),
                         )),
                         child: ListTile(
                           leading: CircleAvatar(

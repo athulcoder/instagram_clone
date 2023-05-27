@@ -28,7 +28,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -222,3 +221,69 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 }
+
+
+
+
+
+
+===========================================================================================
+
+
+
+
+
+postLength == 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 180),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.camera_alt_outlined,
+                                size: 40,
+                              ),
+                              Text(
+                                'No post',
+                                style: TextStyle(fontSize: 16),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : FutureBuilder(
+                        future: FirebaseFirestore.instance
+                            .collection("Posts")
+                            .where('uid', isEqualTo: widget.uid)
+                            .get(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return GridView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.docs.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 0.1,
+                                    mainAxisSpacing: 0.1,
+                                    childAspectRatio: 1),
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot snap =
+                                  snapshot.data!.docs[index];
+
+                              return Container(
+                                child: Image(
+                                  image: NetworkImage(snap['postUrl']),
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      )

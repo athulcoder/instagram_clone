@@ -1,8 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_clone/resources/auth_methods.dart';
+import 'package:instagram_clone/responsive/mobile_screen_layout.dart';
+import 'package:instagram_clone/responsive/web_screen_layout.dart';
+import 'package:instagram_clone/screens/loginScreen.dart';
 import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/utils.dart';
+
+import '../responsive/responsive_layout_screen.dart';
 
 var Spacer = SizedBox(
   height: 10,
@@ -21,6 +30,65 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   Uint8List? _avatar;
+  bool _isLoading = false;
+  bool _textEnabled = true;
+  String defaultAvatarUrl =
+      'https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg';
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
+
+  void selectImage() async {
+    Uint8List im = await pickImage(ImageSource.gallery);
+
+    setState(() {
+      _avatar = im;
+    });
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+      _textEnabled = false;
+    });
+    String res = await AuthMethods().signupUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+        username: _usernameController.text,
+        fullname: _fullnameController.text,
+        file: _avatar ?? await defaultProfile());
+
+    setState(() {
+      _isLoading = false;
+      _textEnabled = true;
+    });
+    if (res != "success") {
+      showSnackBar(res, context);
+    } else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout()),
+      ));
+    }
+  }
+
+  void navigatorToLogin() {
+    Navigator.of(context).pop();
+  }
+
+  Future<Uint8List> defaultProfile() async {
+    Uint8List bytes = (await NetworkAssetBundle(Uri.parse(defaultAvatarUrl))
+            .load(defaultAvatarUrl))
+        .buffer
+        .asUint8List();
+    return bytes;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +111,32 @@ class _SignupScreenState extends State<SignupScreen> {
                 ],
               ),
               SizedBox(
-                height: 20,
+                height: 10,
+              ),
+              Stack(
+                children: [
+                  _avatar != null
+                      ? CircleAvatar(
+                          radius: 64,
+                          backgroundImage: MemoryImage(_avatar!),
+                        )
+                      : CircleAvatar(
+                          radius: 64,
+                          backgroundImage: NetworkImage(defaultAvatarUrl),
+                        ),
+                  Positioned(
+                      bottom: -10,
+                      right: 0,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.add_a_photo,
+                        ),
+                        onPressed: selectImage,
+                      ))
+                ],
+              ),
+              SizedBox(
+                height: 10,
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 35),
@@ -81,26 +174,32 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 35),
-                child: InkWell(
-                  onTap: () {},
-                  child: Container(
-                    child: Center(
-                      child: Text('Sign up'),
-                    ),
-                    width: double.infinity,
-                    height: 35,
-                    padding: EdgeInsets.only(top: 4, bottom: 4),
-                    decoration: BoxDecoration(
-                        color: blueColor,
-                        borderRadius: BorderRadius.circular(5)),
-                  ),
-                ),
+                child: _isLoading
+                    ? Container(
+                        width: double.infinity,
+                        height: 35,
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    : InkWell(
+                        onTap: signUpUser,
+                        child: Container(
+                          child: Center(
+                            child: Text('Sign up'),
+                          ),
+                          width: double.infinity,
+                          height: 35,
+                          padding: EdgeInsets.only(top: 4, bottom: 4),
+                          decoration: BoxDecoration(
+                              color: blueColor,
+                              borderRadius: BorderRadius.circular(5)),
+                        ),
+                      ),
               ),
               SizedBox(
                 height: 20,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: navigatorToLogin,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -132,6 +231,7 @@ class _SignupScreenState extends State<SignupScreen> {
     bool isPass = false,
   }) {
     return CupertinoTextField(
+      enabled: _textEnabled,
       controller: controller,
       decoration: BoxDecoration(
         color: Color.fromARGB(255, 47, 46, 46),

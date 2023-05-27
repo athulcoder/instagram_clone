@@ -17,10 +17,11 @@ class AuthMethods {
     return model.User(
         username: snapshot.get('username'),
         email: snapshot.get('email'),
-        bio: snapshot.get('bio'),
+        fullname: snapshot.get('fullname'),
         uid: snapshot.get('uid'),
         avatarUrl: snapshot.get('avatarUrl'),
         followers: snapshot.get('followers'),
+        bio: snapshot.get('bio'),
         following: snapshot.get('following'));
   }
   //  Sign up the user
@@ -29,7 +30,7 @@ class AuthMethods {
     required String email,
     required String password,
     required String username,
-    required String bio,
+    required String fullname,
     required Uint8List file,
   }) async {
     String res = "some error occured";
@@ -37,7 +38,7 @@ class AuthMethods {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
           username.isNotEmpty ||
-          bio.isNotEmpty) {
+          fullname.isNotEmpty) {
         // Register user
         UserCredential credential = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
@@ -52,9 +53,10 @@ class AuthMethods {
             email: email,
             uid: credential.user!.uid,
             avatarUrl: photoUrl,
-            bio: bio,
+            fullname: fullname,
             followers: [],
             following: [],
+            bio: '',
             username: username);
 
         await _fireStore
@@ -66,9 +68,9 @@ class AuthMethods {
       }
     } on FirebaseAuthException catch (err) {
       if (err.code == 'invalid-email') {
-        res = "email is not formatted";
+        res = "Invalid email !";
       } else if (err.code == "weak-password") {
-        res = "Password is not good";
+        res = "Weak password !";
       }
     } catch (error) {
       res = error.toString();

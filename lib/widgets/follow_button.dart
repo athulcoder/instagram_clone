@@ -28,10 +28,10 @@ class FollowButton extends StatelessWidget {
           alignment: Alignment.center,
           child: Text(
             label,
-            style: TextStyle(color: textColor, fontSize: 12),
+            style: TextStyle(color: textColor, fontSize: 15),
           ),
-          width: 160,
-          height: 30,
+          width: 164,
+          height: 37,
         ),
       ),
     );
