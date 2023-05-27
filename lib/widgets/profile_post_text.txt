@@ -1,0 +1,19 @@
+isLoading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : 
+        GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, crossAxisSpacing: 0, mainAxisSpacing: 0),
+            itemCount: postDetails.docs.length,
+            itemBuilder: (context, index) {
+
+              return Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                            'https://media.istockphoto.com/id/1433211776/photo/woman-silhouette-in-front-of-the-ocean-at-sunset.jpg?b=1&s=170667a&w=0&k=20&c=xGzw_4wTjK0uKJLS42lR7xPsD7tGRTrx-mWBl0ylih4='))),
+              );
+            });

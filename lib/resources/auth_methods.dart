@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:instagram_clone/resources/storage_methods.dart';
 import 'package:instagram_clone/models/user.dart' as model;
+import 'package:instagram_clone/resources/storage_methods.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -16,8 +16,9 @@ class AuthMethods {
 
     return model.User(
         username: snapshot.get('username'),
+        posts: snapshot.get("posts"),
         email: snapshot.get('email'),
-        fullname: snapshot.get('fullname'),
+        name: snapshot.get('name'),
         uid: snapshot.get('uid'),
         avatarUrl: snapshot.get('avatarUrl'),
         followers: snapshot.get('followers'),
@@ -30,7 +31,7 @@ class AuthMethods {
     required String email,
     required String password,
     required String username,
-    required String fullname,
+    required String name,
     required Uint8List file,
   }) async {
     String res = "some error occured";
@@ -38,12 +39,10 @@ class AuthMethods {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
           username.isNotEmpty ||
-          fullname.isNotEmpty) {
+          name.isNotEmpty) {
         // Register user
         UserCredential credential = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
-
-        print(credential.user!.uid);
 
         String photoUrl = await StorageMethods()
             .uploadImageToStorage("profilePic", file, false);
@@ -53,10 +52,11 @@ class AuthMethods {
             email: email,
             uid: credential.user!.uid,
             avatarUrl: photoUrl,
-            fullname: fullname,
+            name: name,
             followers: [],
             following: [],
             bio: '',
+            posts: [],
             username: username);
 
         await _fireStore
@@ -105,4 +105,6 @@ class AuthMethods {
     }
     return res;
   }
+
+  Future<void> saveEditedChanges() async {}
 }

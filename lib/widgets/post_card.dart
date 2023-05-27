@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/user.dart';
 import 'package:instagram_clone/providers/user_provider.dart';
 import 'package:instagram_clone/resources/firestore_methods.dart';
 import 'package:instagram_clone/screens/comment_screen.dart';
+import 'package:instagram_clone/screens/profile_screen.dart';
 import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/text_utils.dart';
 import 'package:instagram_clone/utils/utils.dart';
+import 'package:instagram_clone/widgets/bottom_sheet_functions.dart';
 import 'package:instagram_clone/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,7 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  TextUtils _textUtils = TextUtils();
   bool isLikeAnimating = false;
   int commentNo = 0;
 
@@ -27,10 +30,18 @@ class _PostCardState extends State<PostCard> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getComments();
+    getCommentCount();
   }
 
-  void getComments() async {
+  void showComments() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => CommentScreen(
+        snap: widget.snap,
+      ),
+    ));
+  }
+
+  void getCommentCount() async {
     try {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection("Posts")
@@ -51,35 +62,51 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         children: [
           ListTile(
-            leading: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                CircleAvatar(
-                    radius: 16,
-                    backgroundImage: NetworkImage(widget.snap['profileImage'])),
-                const SizedBox(
-                  width: 7,
-                ),
-                Text(
-                  widget.snap['username'],
-                  style: const TextStyle(
-                      color: primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12),
-                ),
-                const SizedBox(
-                  width: 3,
-                ),
-                const Icon(
-                  Icons.verified,
-                  color: Colors.blueAccent,
-                  size: 15,
-                )
-              ],
+            leading: InkWell(
+              highlightColor: Colors.transparent,
+              
+              splashColor: Colors.transparent,
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ProfileScreen(uid: widget.snap['uid']),
+              )),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                      radius: 15,
+                      backgroundImage:
+                          NetworkImage(widget.snap['profileImage'])),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  _textUtils.normal15(widget.snap['username'], primaryColor),
+                  const SizedBox(
+                    width: 3,
+                  ),
+                  const Icon(
+                    Icons.verified,
+                    color: Colors.blueAccent,
+                    size: 15,
+                  )
+                ],
+              ),
             ),
             trailing: IconButton(
               icon: Icon(Icons.more_horiz),
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet<dynamic>(
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: mobileSearchColor,
+                    builder: (BuildContext context) {
+                      return SafeArea(
+                          child: BottomSheetFunction()
+                              .homePostMore(snap: widget.snap));
+                    },
+                    context: context);
+              },
             ),
           ),
           GestureDetector(
@@ -151,14 +178,7 @@ class _PostCardState extends State<PostCard> {
                               )),
                   ),
                   IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => CommentScreen(
-                            snap: widget.snap,
-                          ),
-                        ));
-                      },
-                      icon: Icon(Icons.comment)),
+                      onPressed: showComments, icon: Icon(Icons.comment)),
                   IconButton(onPressed: () {}, icon: Icon(Icons.send)),
                 ],
               ),
@@ -206,11 +226,14 @@ class _PostCardState extends State<PostCard> {
                     height: 8,
                   ),
                   // Number of comments and date published
-                  DefaultTextStyle(
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    child: Text(
-                      'View all ${commentNo} comments',
-                      style: TextStyle(color: Colors.grey),
+                  GestureDetector(
+                    onTap: showComments,
+                    child: DefaultTextStyle(
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      child: Text(
+                        'View all ${commentNo} comments',
+                        style: TextStyle(color: Colors.grey),
+                      ),
                     ),
                   ),
                   SizedBox(

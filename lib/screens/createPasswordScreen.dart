@@ -1,66 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_clone/resources/auth_methods.dart';
 import 'package:instagram_clone/responsive/mobile_screen_layout.dart';
+import 'package:instagram_clone/responsive/responsive_layout_screen.dart';
 import 'package:instagram_clone/responsive/web_screen_layout.dart';
-import 'package:instagram_clone/screens/signupScreen_1.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/utils/text_utils.dart';
 import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widgets/text_field_input.dart';
 
-import '../responsive/responsive_layout_screen.dart';
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class CreatePasswordScreen extends StatefulWidget {
+  final String email;
+  final String fullname;
+  final String username;
+  final Uint8List profilePic;
+  const CreatePasswordScreen(
+      {super.key,
+      required this.email,
+      required this.fullname,
+      required this.profilePic,
+      required this.username});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<CreatePasswordScreen> createState() => CreatePasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class CreatePasswordScreenState extends State<CreatePasswordScreen> {
+  final TextEditingController _firstPassword = TextEditingController();
+  final TextEditingController _secondPassword = TextEditingController();
+  Uint8List? _avatar;
   bool _isLoading = false;
+  bool _textEnabled = true;
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-  }
+  void signUpUser() async {
+    if (_firstPassword.text == _secondPassword.text) {
+      String password = _firstPassword.text;
+      setState(() {
+        _isLoading = true;
+        _textEnabled = false;
+      });
+      String res = await AuthMethods().signupUser(
+          email: widget.email,
+          password: password,
+          username: widget.username,
+          name: widget.fullname,
+          file: widget.profilePic);
 
-  void loginUser() async {
-    setState(() {
-      _isLoading = true;
-    });
-    String res = await AuthMethods().loginUser(
-        email: _emailController.text, password: _passwordController.text);
-
-    setState(() {
-      _isLoading = false;
-    });
-    if (res == "success") {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const ResponsiveLayout(
-            mobileScreenLayout: MobileScreenLayout(),
-            webScreenLayout: WebScreenLayout()),
-      ));
+      setState(() {
+        _isLoading = false;
+        _textEnabled = true;
+      });
+      if (res != "success") {
+        showSnackBar(res, context);
+      } else {
+        Navigator.pushAndRemoveUntil<dynamic>(
+          context,
+          MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) => ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),
+            ),
+          ),
+          (route) => false, //if you want to disable back feature set to false
+        );
+      }
     } else {
-      showSnackBar(res, context);
+      showSnackBar("Password doesn't match !", context);
     }
-  }
-
-  void navigatorToSignUp() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const CreateAccountScreen(),
-    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         body: SafeArea(
       child: SingleChildScrollView(
@@ -71,8 +82,13 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
+                margin: EdgeInsets.only(top: 30),
                 width: MediaQuery.of(context).size.width,
-                height: 100,
+                child: SvgPicture.asset(
+                  'assets/ic_instagram.svg',
+                  color: primaryColor,
+                  height: 50,
+                ),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -81,41 +97,40 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      'assets/ic_instagram.svg',
-                      color: primaryColor,
-                      height: 56,
-                    ),
                     const SizedBox(
                       height: 20,
                     ),
-                    TextFieldInput(
-                        textEditingController: _emailController,
-                        hintText: 'Email',
-                        textInputType: TextInputType.emailAddress),
                     const SizedBox(
                       height: 20,
                     ),
                     TextFieldInput(
                         isPass: true,
-                        textEditingController: _passwordController,
+                        textEditingController: _firstPassword,
                         hintText: 'Password',
-                        textInputType: TextInputType.text),
+                        textInputType: TextInputType.name),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFieldInput(
+                        isPass: true,
+                        textEditingController: _secondPassword,
+                        hintText: 'Confirm Password',
+                        textInputType: TextInputType.emailAddress),
                     const SizedBox(
                       height: 20,
                     ),
                     _isLoading
-                        ? Center(
-                            child: CircularProgressIndicator(
-                              color: primaryColor,
-                            ),
+                        ? Container(
+                            width: double.infinity,
+                            height: 35,
+                            child: Center(child: CircularProgressIndicator()),
                           )
                         : InkWell(
-                            onTap: loginUser,
+                            onTap: signUpUser,
                             child: Container(
                               child: Center(
                                 child:
-                                    TextUtils().bold14('Log In', primaryColor),
+                                    TextUtils().bold14('Sign up', primaryColor),
                               ),
                               width: double.infinity,
                               height: 45,
@@ -132,17 +147,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: MediaQuery.of(context).size.width,
                 height: 100,
                 child: GestureDetector(
-                  onTap: navigatorToSignUp,
+                  onTap: () {},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        child: const Text("Don't have an account?"),
+                        child: const Text("Have an Account"),
                         padding: const EdgeInsets.symmetric(vertical: 8),
                       ),
                       Container(
                         child: const Text(
-                          "Sign up",
+                          "Sign in",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 8),

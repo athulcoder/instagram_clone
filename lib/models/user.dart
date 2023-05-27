@@ -4,18 +4,20 @@ class User {
   final String avatarUrl;
   final String username;
   final String bio;
-  final String fullname;
+  final String name;
   final List followers;
   final List following;
+  final List posts;
 
   const User(
       {required this.email,
       required this.uid,
       required this.avatarUrl,
-      required this.fullname,
+      required this.name,
       required this.followers,
       required this.following,
       required this.username,
+      required this.posts,
       required this.bio});
 
   Map<String, dynamic> toJson() => {
@@ -24,8 +26,9 @@ class User {
         "email": email,
         "avatarUrl": avatarUrl,
         "bio": bio,
-        'fullname': fullname,
+        'fullname': name,
         "followers": followers,
         "following": following,
+        "posts": posts
       };
 }

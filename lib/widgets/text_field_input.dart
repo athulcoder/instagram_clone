@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
-class TextFeildInput extends StatelessWidget {
+class TextFieldInput extends StatelessWidget {
   final TextEditingController textEditingController;
   final bool isPass;
   final String hintText;
   final TextInputType textInputType;
 
-  const TextFeildInput(
+  const TextFieldInput(
       {super.key,
       required this.textEditingController,
       required this.hintText,

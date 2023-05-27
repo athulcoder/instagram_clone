@@ -78,6 +78,7 @@ class _SearchScreenState extends State<SearchScreen> {
         appBar: AppBar(
           backgroundColor: mobileBackgroundColor,
           title: CupertinoSearchTextField(
+            padding: EdgeInsets.symmetric(vertical: 10),
             controller: _searchController,
             placeholder: 'Search username...',
             style: TextStyle(color: primaryColor, fontSize: 15),
@@ -92,8 +93,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         onTap: () =>
                             Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
-                              // uid: _searchResult[index]['uid']
-                              ProfileScreen(),
+                              ProfileScreen(uid: _searchResult[index]['uid']),
                         )),
                         child: ListTile(
                           leading: CircleAvatar(
