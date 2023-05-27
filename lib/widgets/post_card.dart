@@ -164,21 +164,50 @@ class _PostCardState extends State<PostCard> {
                               widget.snap['likes']);
                         },
                         icon: widget.snap['likes'].contains(user.uid)
-                            ? const Icon(
-                                Icons.favorite,
-                                color: Colors.red,
+                            ? Container(
+                                height: 24,
+                                child: Image.asset(
+                                  'assets/icons/like(1).png',
+                                  color: Colors.red,
+                                ),
                               )
-                            : const Icon(
-                                Icons.favorite_border,
-                                color: Colors.white,
+                            : Container(
+                                height: 22,
+                                child: Image.asset(
+                                  'assets/icons/like.png',
+                                  color: primaryColor,
+                                ),
                               )),
                   ),
                   IconButton(
-                      onPressed: showComments, icon: Icon(Icons.comment)),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.send)),
+                      onPressed: showComments,
+                      icon: Container(
+                        height: 22,
+                        child: Image.asset(
+                          'assets/icons/chat.png',
+                          color: primaryColor,
+                        ),
+                      )),
+                  IconButton(
+                      onPressed: () {},
+                      icon: Container(
+                        height: 22,
+                        child: Image.asset(
+                          'assets/icons/send.png',
+                          color: primaryColor,
+                        ),
+                      )),
                 ],
               ),
-              IconButton(onPressed: () {}, icon: Icon(Icons.bookmark_border))
+              IconButton(
+                  onPressed: () {},
+                  icon: Container(
+                    height: 22,
+                    child: Image.asset(
+                      'assets/icons/save-instagram.png',
+                      color: primaryColor,
+                    ),
+                  ))
             ],
           ),
 

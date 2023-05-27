@@ -82,8 +82,8 @@ class BottomSheetFunction {
       splashColor: Colors.transparent,
       onTap: onTap,
       child: Container(
-        width: 60,
-        height: 60,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
             shape: BoxShape.circle, border: Border.all(color: primaryColor)),
         child: icon,

@@ -251,41 +251,65 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(
-                          top: 20, left: 10, right: 10, bottom: 10),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(right: 10),
-                              child: Column(children: [
-                                ElevatedButton(
-                                  onPressed: () {},
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 45,
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                      shape: CircleBorder(
-                                          side: BorderSide(
-                                        color: Colors.white,
-                                      )),
-                                      padding: EdgeInsets.all(5),
-                                      primary: Colors.transparent),
+                        margin: EdgeInsets.only(
+                            top: 20, left: 10, right: 10, bottom: 10),
+                        child: userState == 0
+                            ? SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 10),
+                                      child: Column(children: [
+                                        ElevatedButton(
+                                          onPressed: () {},
+                                          child: Icon(
+                                            Icons.add,
+                                            size: 45,
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                              shape: CircleBorder(
+                                                  side: BorderSide(
+                                                color: Colors.white,
+                                              )),
+                                              padding: EdgeInsets.all(5),
+                                              primary: Colors.transparent),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        _textUtils.normal13('New', Colors.white)
+                                      ]),
+                                    ),
+                                    for (int i = 0; i < 7; i++)
+                                      favouriteStoriesWidget()
+                                  ],
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                _textUtils.normal13('New', Colors.white)
-                              ]),
-                            ),
-                            for (int i = 0; i < 7; i++) favouriteStoriesWidget()
-                          ],
-                        ),
-                      ),
-                    ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            right: 10, left: 10),
+                                        child: CircleAvatar(
+                                          radius: 25,
+                                          backgroundColor:
+                                              Color.fromRGBO(26, 26, 26, 1),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextUtils()
+                                          .normal14("Highligths", primaryColor)
+                                    ],
+                                  )
+                                ],
+                              )),
                     TabBar(
                       indicatorColor: Colors.white,
                       indicatorWeight: 0.8,
@@ -293,8 +317,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                       padding: EdgeInsets.zero,
                       controller: _tabController,
                       tabs: [
-                        Icon(Icons.grid_on_outlined),
-                        Icon(Icons.person_pin_circle_outlined)
+                        Icon(
+                          Icons.grid_on_outlined,
+                        ),
+                        Container(
+                          height: 24,
+                          child: Image.asset(
+                            'assets/icons/user.png',
+                            color: primaryColor,
+                          ),
+                        )
                       ],
                     ),
                     Expanded(

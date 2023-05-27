@@ -26,7 +26,7 @@ class User {
         "email": email,
         "avatarUrl": avatarUrl,
         "bio": bio,
-        'fullname': name,
+        'name': name,
         "followers": followers,
         "following": following,
         "posts": posts

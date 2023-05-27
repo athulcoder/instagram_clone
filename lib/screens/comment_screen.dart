@@ -32,11 +32,14 @@ class _CommentScreenState extends State<CommentScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
-        title: const Text('Comments'),
+        title: const Text(
+          'Comments',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
         centerTitle: false,
       ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+      bottomSheet: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Row(
           children: [
             CircleAvatar(
@@ -45,6 +48,7 @@ class _CommentScreenState extends State<CommentScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 16, right: 8),
                 child: TextField(
+                  style: TextStyle(fontSize: 19),
                   controller: _commentController,
                   decoration: InputDecoration(
                     border: InputBorder.none,
@@ -70,7 +74,7 @@ class _CommentScreenState extends State<CommentScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 child: const Text(
                   'Post',
-                  style: TextStyle(color: blueColor),
+                  style: TextStyle(color: blueColor, fontSize: 18),
                 ),
               ),
             )

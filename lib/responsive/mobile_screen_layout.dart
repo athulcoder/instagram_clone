@@ -15,7 +15,7 @@ class MobileScreenLayout extends StatefulWidget {
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   int _page = 0;
   late PageController pageController;
-  late String _avatarUrl;
+  String _avatarUrl = '';
 
   void getAvatarFromSever() async {
     DocumentSnapshot snap = await FirebaseFirestore.instance
@@ -113,24 +113,35 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
                   height: 25,
                   child: _page == 3
                       ? Image.asset(
-                          'assets/icons/like(1).png',
+                          'assets/icons/bell.png',
                           color: primaryColor,
                         )
                       : Image.asset(
-                          'assets/icons/like.png',
+                          'assets/icons/notification.png',
                           color: primaryColor,
                         )),
               label: '',
               backgroundColor: primaryColor),
           BottomNavigationBarItem(
-              icon: _avatarUrl != null
-                  ? CircleAvatar(
+              icon: _avatarUrl != ''
+                  ? _page == 4
+                      ? Container(
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border:
+                                  Border.all(color: primaryColor, width: 2)),
+                          child: CircleAvatar(
+                            radius: 14,
+                            backgroundImage: NetworkImage(_avatarUrl),
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 14,
+                          backgroundImage: NetworkImage(_avatarUrl),
+                        )
+                  : CircleAvatar(
                       radius: 14,
-                      backgroundImage: NetworkImage(_avatarUrl),
-                    )
-                  : Icon(
-                      Icons.person,
-                      color: _page == 4 ? primaryColor : secondaryColor,
+                      backgroundColor: mobileSearchColor,
                     ),
               label: '',
               backgroundColor: primaryColor),

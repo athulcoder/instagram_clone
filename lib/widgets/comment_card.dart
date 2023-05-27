@@ -14,10 +14,10 @@ class _CommentCardState extends State<CommentCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.symmetric(vertical: 9),
       child: ListTile(
         leading: CircleAvatar(
-          radius: 18,
+          radius: 21,
           backgroundImage: NetworkImage(widget.snap['userProfile']),
         ),
         title: Column(
@@ -29,7 +29,7 @@ class _CommentCardState extends State<CommentCard> {
                 Text(
                   widget.snap['username'],
                   style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 16,
                       color: primaryColor,
                       fontWeight: FontWeight.bold),
                 ),
@@ -39,7 +39,7 @@ class _CommentCardState extends State<CommentCard> {
                 Text(
                   DateFormat.yMMMd()
                       .format(widget.snap['datePublished'].toDate()),
-                  style: TextStyle(color: Colors.grey, fontSize: 11),
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
                 )
               ],
             ),
@@ -48,16 +48,16 @@ class _CommentCardState extends State<CommentCard> {
             ),
             Text(
               widget.snap['commentText'],
-              style: TextStyle(fontSize: 11),
+              style: TextStyle(fontSize: 17),
             ),
             SizedBox(
-              height: 6,
+              height: 9,
             ),
             InkWell(
               child: Container(
                 child: Text(
                   'Reply',
-                  style: TextStyle(color: Colors.grey, fontSize: 10),
+                  style: TextStyle(color: Colors.grey, fontSize: 13),
                 ),
               ),
             )
