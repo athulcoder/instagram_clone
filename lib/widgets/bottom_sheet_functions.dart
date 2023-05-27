@@ -13,14 +13,30 @@ class BottomSheetFunction {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                circleButton(
-                    icon: Icon(Icons.bookmark_border_rounded),
-                    onTap: () {},
-                    label: "save"),
-                circleButton(
-                    icon: Icon(Icons.qr_code_2_rounded),
-                    onTap: () {},
-                    label: "QR code")
+                Column(
+                  children: [
+                    circleButton(
+                        icon: Icon(Icons.bookmark_border_rounded),
+                        onTap: () {},
+                        label: "save"),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    TextUtils().normal14('save', primaryColor)
+                  ],
+                ),
+                Column(
+                  children: [
+                    circleButton(
+                        icon: Icon(Icons.qr_code_2_rounded),
+                        onTap: () {},
+                        label: "QR code"),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    TextUtils().normal14('QR code', primaryColor)
+                  ],
+                )
               ],
             ),
             const SizedBox(
@@ -66,8 +82,8 @@ class BottomSheetFunction {
       splashColor: Colors.transparent,
       onTap: onTap,
       child: Container(
-        width: 50,
-        height: 50,
+        width: 60,
+        height: 60,
         decoration: BoxDecoration(
             shape: BoxShape.circle, border: Border.all(color: primaryColor)),
         child: icon,

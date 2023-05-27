@@ -92,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.lock_outline),
+                      Icon(Icons.lock_sharp),
                       const SizedBox(
                         width: 5,
                       ),
@@ -105,11 +105,23 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                   Row(
                     children: [
-                      Icon(Icons.add_box_outlined),
+                      Container(
+                        height: 22,
+                        child: Image.asset(
+                          'assets/icons/add.png',
+                          color: primaryColor,
+                        ),
+                      ),
                       const SizedBox(
                         width: 15,
                       ),
-                      Icon(Icons.menu)
+                      Container(
+                        height: 22,
+                        child: Image.asset(
+                          'assets/icons/menu.png',
+                          color: primaryColor,
+                        ),
+                      ),
                     ],
                   )
                 ],

@@ -14,18 +14,29 @@ class FeedScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         backgroundColor: mobileBackgroundColor,
         centerTitle: false,
-        title: SvgPicture.asset(
-          'assets/ic_instagram.svg',
-          color: primaryColor,
-          height: 32,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              'assets/ic_instagram.svg',
+              color: primaryColor,
+              height: 32,
+            ),
+            SizedBox(
+              width: 6,
+            ),
+            Icon(Icons.keyboard_arrow_down_rounded)
+          ],
         ),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.message_outlined,
-            ),
-          ),
+              onPressed: () {},
+              icon: Container(
+                  height: 25,
+                  child: Image.asset(
+                    'assets/icons/messenger.png',
+                    color: primaryColor,
+                  ))),
         ],
       ),
       body: StreamBuilder(

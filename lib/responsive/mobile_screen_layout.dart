@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/utils/colors.dart';
@@ -13,10 +15,22 @@ class MobileScreenLayout extends StatefulWidget {
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
   int _page = 0;
   late PageController pageController;
+  late String _avatarUrl;
+
+  void getAvatarFromSever() async {
+    DocumentSnapshot snap = await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    setState(() {
+      _avatarUrl = snap['avatarUrl'];
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    getAvatarFromSever();
     pageController = PageController();
   }
 
@@ -48,41 +62,76 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         children: homeScreenItems,
       ),
       bottomNavigationBar: CupertinoTabBar(
+        height: 60,
+        border: Border(top: BorderSide(color: primaryColor, width: .1)),
         backgroundColor: mobileBackgroundColor,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                color: _page == 0 ? primaryColor : secondaryColor,
-              ),
+              icon: Container(
+                  height: 25,
+                  child: _page == 0
+                      ? Image.asset(
+                          'assets/icons/home(1).png',
+                          color: primaryColor,
+                        )
+                      : Image.asset(
+                          'assets/icons/home.png',
+                          color: primaryColor,
+                        )),
               label: '',
               backgroundColor: primaryColor),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.search,
-                color: _page == 1 ? primaryColor : secondaryColor,
-              ),
+              icon: Container(
+                  height: 25,
+                  child: _page == 1
+                      ? Image.asset(
+                          'assets/icons/search.png',
+                          color: primaryColor,
+                        )
+                      : Image.asset(
+                          'assets/icons/search-interface-symbol.png',
+                          color: primaryColor,
+                        )),
               label: '',
               backgroundColor: primaryColor),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.add_circle,
-                color: _page == 2 ? primaryColor : secondaryColor,
-              ),
+              icon: Container(
+                  height: 25,
+                  child: _page == 2
+                      ? Image.asset(
+                          'assets/icons/plus(1).png',
+                          color: primaryColor,
+                        )
+                      : Image.asset(
+                          'assets/icons/plus.png',
+                          color: primaryColor,
+                        )),
               label: '',
               backgroundColor: primaryColor),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.favorite,
-                color: _page == 3 ? primaryColor : secondaryColor,
-              ),
+              icon: Container(
+                  height: 25,
+                  child: _page == 3
+                      ? Image.asset(
+                          'assets/icons/like(1).png',
+                          color: primaryColor,
+                        )
+                      : Image.asset(
+                          'assets/icons/like.png',
+                          color: primaryColor,
+                        )),
               label: '',
               backgroundColor: primaryColor),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person,
-                color: _page == 4 ? primaryColor : secondaryColor,
-              ),
+              icon: _avatarUrl != null
+                  ? CircleAvatar(
+                      radius: 14,
+                      backgroundImage: NetworkImage(_avatarUrl),
+                    )
+                  : Icon(
+                      Icons.person,
+                      color: _page == 4 ? primaryColor : secondaryColor,
+                    ),
               label: '',
               backgroundColor: primaryColor),
         ],

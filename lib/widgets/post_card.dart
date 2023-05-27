@@ -61,15 +61,11 @@ class _PostCardState extends State<PostCard> {
     return Container(
       child: Column(
         children: [
-          ListTile(
-            leading: InkWell(
-              highlightColor: Colors.transparent,
-              
-              splashColor: Colors.transparent,
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ProfileScreen(uid: widget.snap['uid']),
-              )),
-              child: Row(
+          InkWell(
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ProfileScreen(uid: widget.snap['uid']))),
+            child: ListTile(
+              leading: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircleAvatar(
@@ -90,23 +86,23 @@ class _PostCardState extends State<PostCard> {
                   )
                 ],
               ),
-            ),
-            trailing: IconButton(
-              icon: Icon(Icons.more_horiz),
-              onPressed: () {
-                showModalBottomSheet<dynamic>(
-                    isScrollControlled: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    backgroundColor: mobileSearchColor,
-                    builder: (BuildContext context) {
-                      return SafeArea(
-                          child: BottomSheetFunction()
-                              .homePostMore(snap: widget.snap));
-                    },
-                    context: context);
-              },
+              trailing: IconButton(
+                icon: Icon(Icons.more_horiz),
+                onPressed: () {
+                  showModalBottomSheet<dynamic>(
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      backgroundColor: mobileSearchColor,
+                      builder: (BuildContext context) {
+                        return SafeArea(
+                            child: BottomSheetFunction()
+                                .homePostMore(snap: widget.snap));
+                      },
+                      context: context);
+                },
+              ),
             ),
           ),
           GestureDetector(
